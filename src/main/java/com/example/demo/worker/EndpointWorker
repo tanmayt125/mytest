@@ -1,0 +1,20 @@
+ // Fetch the endpoints configuration
+        Map<String, Object> endpointsMap = new HashMap<>();
+
+        // Adding values of "ipne" endpoints
+        EndpointsConfig.Ipne ipneConfig = endpointsConfig.getIpne();
+        endpointsMap.put("ipne_oAuth_url", ipneConfig.getoAuth().getUrl());
+        endpointsMap.put("ipne_oAuth_username", ipneConfig.getoAuth().getUsername());
+        endpointsMap.put("ipne_oAuth_password", ipneConfig.getoAuth().getPassword());
+        endpointsMap.put("ipne_638Url_1", ipneConfig.get638Url_1());
+        endpointsMap.put("ipne_638Url_2", ipneConfig.get638Url_2());
+        endpointsMap.put("ipne_ipneUrl", ipneConfig.getIpneUrl());
+
+        // Adding values of "npis" endpoints
+        EndpointsConfig.Npis npisConfig = endpointsConfig.getNpis();
+        endpointsMap.put("npis_oAuth_url", npisConfig.getoAuth().getUrl());
+        endpointsMap.put("npis_oAuth_username", npisConfig.getoAuth().getUsername());
+        endpointsMap.put("npis_oAuth_password", npisConfig.getoAuth().getPassword());
+        endpointsMap.put("npis_npisUrl", npisConfig.getNpisUrl());
+        endpointsMap.put("npis_npisUserName", npisConfig.getNpisUserName());
+        endpointsMap.put("npis_npisPassword", npisConfig.getNpisPassword());
