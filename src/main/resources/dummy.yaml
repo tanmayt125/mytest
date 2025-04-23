@@ -1,0 +1,67 @@
+configmap.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: endpoints-config
+  namespace: default
+data:
+  endpoints.yaml: |
+    endpoints:
+      npis:
+        oAuth:
+          url: "http://testNpisOauth"
+          username: "test"
+          password: "test"
+        url638_1: "http://1st"
+        url638_2: "http://2nd"
+        npisUrl: "http://npis"
+
+      ipne:
+        oAuth:
+          url: "http://testipneOauth"
+          username: "test"
+          password: "test"
+        ipneUrl: "http://ipne"
+        ipneUserName: "abc"
+        ipnePassword: "test"
+
+
+
+
+deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-springboot-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-springboot-app
+  template:
+    metadata:
+      labels:
+        app: my-springboot-app
+    spec:
+      containers:
+        - name: my-springboot-app
+          image: my-springboot-app:latest
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: endpoints-config-volume
+              mountPath: /config
+              readOnly: true
+      volumes:
+        - name: endpoints-config-volume
+          configMap:
+            name: endpoints-config
+
+
+application.properties
+
+// spring.config.import=classpath:app.properties,optional:configtree:/config/,classpath:endpoints-config.yaml
+

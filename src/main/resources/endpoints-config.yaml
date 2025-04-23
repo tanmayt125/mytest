@@ -1,18 +1,18 @@
 endpoints:
+  npis:
+    oAuth:
+      url: "http://testNpisOauth"
+      username: "test"
+      password: "test"
+    url638_1: "http://1st"
+    url638_2: "http://2nd"
+    npisUrl: "http://npis"
+
   ipne:
     oAuth:
       url: "http://testipneOauth"
       username: "test"
       password: "test"
-    url638_1: "http://1st"
-    url638_2: "http://2nd"
     ipneUrl: "http://ipne"
-
-  npis:
-    oAuth:
-      url: "http://testnpisOauth"
-      username: "test"
-      password: "test"
-    npisUrl: "http://ipne"
-    npisUserName: "abc"
-    npisPassword: "test"
+    ipneUserName: "abc"
+    ipnePassword: "test"
