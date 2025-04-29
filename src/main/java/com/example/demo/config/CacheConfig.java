@@ -20,16 +20,23 @@ public class CacheConfig {
         CaffeineCache authTokenCache1 = new CaffeineCache("authTokenCache1",
                 Caffeine.newBuilder()
                         .maximumSize(1)
-                        .expireAfterWrite(5, TimeUnit.MINUTES)
+                        .expireAfterWrite(1, TimeUnit.MINUTES)
                         .build());
 
         CaffeineCache authTokenCache2 = new CaffeineCache("authTokenCache2",
                 Caffeine.newBuilder()
                         .maximumSize(1)
-                        .expireAfterWrite(10, TimeUnit.MINUTES)
+                        .expireAfterWrite(1, TimeUnit.MINUTES)
                         .build());
 
-        cacheManager.setCaches(Arrays.asList(authTokenCache1, authTokenCache2));
+        // secretsCache -> 1 hour TTL (different TTL for AWS Secrets)
+        CaffeineCache secretsCache = new CaffeineCache("secretsCache",
+                Caffeine.newBuilder()
+                        .maximumSize(1)
+                        .expireAfterWrite(1, TimeUnit.HOURS)
+                        .build());
+
+        cacheManager.setCaches(Arrays.asList(authTokenCache1, authTokenCache2, secretsCache));
         return cacheManager;
     }
 }
