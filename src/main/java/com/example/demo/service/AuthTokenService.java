@@ -1,9 +1,14 @@
 package com.example.demo.service;
 
 import com.example.demo.dao.OAuthTokenResponse;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class AuthTokenService {
@@ -62,5 +67,22 @@ public class AuthTokenService {
             // Exception handling: return CAM-5001 + original error message
             throw new RuntimeException("CAM-5001: " + ex.getMessage());
         }
+    }
+
+    @Cacheable(value = "genericKeyValueCache")
+    public Map<String, String> getGenericKeyValueMap() {
+        System.out.println("Fetching fresh key-value map...");
+
+        // Simulate external call
+        Map<String, String> map = new HashMap<>();
+        map.put("client_id", "my-client-id");
+        map.put("client_secret", "my-secret");
+        map.put("token", UUID.randomUUID().toString()); // simulate random token
+
+        return map;
+    }
+
+    public void clearGenericKeyValueCache(CacheManager cacheManager) {
+        cacheManager.getCache("genericKeyValueCache").clear();
     }
 }

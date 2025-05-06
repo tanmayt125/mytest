@@ -36,7 +36,14 @@ public class CacheConfig {
                         .expireAfterWrite(1, TimeUnit.HOURS)
                         .build());
 
-        cacheManager.setCaches(Arrays.asList(authTokenCache1, authTokenCache2, secretsCache));
+        // ✅ New map-style cache
+        CaffeineCache genericKeyValueCache = new CaffeineCache("genericKeyValueCache",
+                Caffeine.newBuilder()
+                        .maximumSize(1)
+                        .expireAfterWrite(1, TimeUnit.MINUTES)
+                        .build());
+
+        cacheManager.setCaches(Arrays.asList(authTokenCache1, authTokenCache2, secretsCache,genericKeyValueCache));
         return cacheManager;
     }
 }
