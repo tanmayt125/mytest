@@ -12,6 +12,12 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class CacheConfig {
 
+    private final CacheTtlProperties ttl;
+
+    public CacheConfig(CacheTtlProperties ttl) {
+        this.ttl = ttl;
+    }
+
     @Bean
     public CacheManager cacheManager() {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
