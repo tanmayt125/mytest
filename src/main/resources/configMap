@@ -1,0 +1,24 @@
+# configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jolt-spec-config
+data:
+  jolt-spec.json: |
+    [
+      {
+        "operation": "shift",
+        "spec": {
+          "user": {
+            "name": "username",
+            "age": "userAge"
+          }
+        }
+      },
+      {
+        "operation": "default",
+        "spec": {
+          "userAge": 25
+        }
+      }
+    ]

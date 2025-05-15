@@ -1,0 +1,17 @@
+[
+  {
+    "operation": "shift",
+    "spec": {
+      "user": {
+        "name": "username",
+        "age": "userAge"
+      }
+    }
+  },
+  {
+    "operation": "default",
+    "spec": {
+      "userAge": 25
+    }
+  }
+]
