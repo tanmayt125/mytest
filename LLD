@@ -1,0 +1,43 @@
+@startuml
+
+actor PortalServiceNow
+participant DML
+participant Camunda
+database PostgresDB
+participant Kafka
+queue TopicKafka
+
+PortalServiceNow -> DML : Initiate Hardware Shipment Request
+DML -> Camunda : Trigger Camunda API with TenantId & ProcessId
+
+Camunda -> Camunda : Validate Request
+Camunda -> PostgresDB : Store Request Data
+PostgresDB --> Camunda : Acknowledgment
+Camunda -> Camunda : Check Installation Method
+
+alt Professional Install
+    Camunda -> Camunda : Continue with fetching details
+else Self-Install
+    Camunda -> Kafka : Send Message to Kafka (Original Request)
+end
+
+alt Fetching Required Details
+    Camunda -> PostgresDB : Fetch Shipping Address
+    PostgresDB --> Camunda : Shipping Address Data
+
+    Camunda -> PostgresDB : Fetch WBS Code
+    PostgresDB --> Camunda : WBS Code Data
+
+    Camunda -> PostgresDB : Fetch Hardware To Be Shipped
+    PostgresDB --> Camunda : Hardware Details
+end
+
+Camunda -> DML : Append Final Response
+DML -> Camunda : REST Call for fetching Kafka Details
+
+Camunda -> Kafka : Send Hydrated Response to Kafka
+Kafka -> TopicKafka : (Forwarded internally)
+
+DML -> PortalServiceNow : Listen (hydrated response)
+
+@enduml

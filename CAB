@@ -1,0 +1,9 @@
+Technologies Used in the Flow
+Kafka
+Kafka is a messaging system that allows different services to communicate with each other by sending messages through topics. Instead of calling each other directly, services publish messages to Kafka, and other services can subscribe to receive them. This makes the system more flexible, fault-tolerant, and scalable. In this flow, Kafka is used to pass the original request and final hydrated response between services.
+
+PostgreSQL (PostgresDB)
+PostgreSQL is a relational database system used to store and manage data. It helps in saving all important information such as user requests, shipping addresses, hardware details, and WBS codes. This data can be read or updated whenever needed. PostgreSQL ensures that data is stored in a structured and reliable way, making it easy for backend services to retrieve and use it.
+
+REST Calls
+REST (Representational State Transfer) calls are a common way for services to talk to each other using HTTP (the same protocol used by web browsers). In this flow, REST calls are used to trigger certain actions (like sending the request to Camunda) and to fetch processed information (like hydrated Kafka details). REST APIs make communication between microservices simple and standardized.
