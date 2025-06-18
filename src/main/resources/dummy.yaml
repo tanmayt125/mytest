@@ -65,3 +65,9 @@
 #
 #// spring.config.import=classpath:app.properties,optional:configtree:/config/,classpath:endpoints-config.yaml
 #
+
+
+#  Sir, as per your requested format ddMMyyyyHH24:miss (Oracle-style), in Java/FEEL expressions it's equivalent to ddMMyyyyHHmmss.
+#I have implemented the logic accordingly. Sample output for current timestamp (2025-06-18T15:03:45) will be:
+#  👉 18062025150345
+#Let me know if you’d like it with separators like : or -.
