@@ -1,5 +1,6 @@
 package au.com.optus.renaissanceCamunda.worker;
 
+import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -41,9 +43,10 @@ class NPISAsynchHydrationJoltWorkerTest {
         when(job.getKey()).thenReturn(123L);
 
         // mock command chain
-        JobClient.FinalCommandStep<?> command = mock(JobClient.FinalCommandStep.class);
+        CompleteJobCommandStep1 command = mock(CompleteJobCommandStep1.class);
         when(jobClient.newCompleteCommand(anyLong())).thenReturn(command);
         when(command.variables(anyMap())).thenReturn(command);
+        when(command.send()).thenReturn(CompletableFuture.completedFuture(null));
 
         // when
         worker.handle(jobClient, job);
@@ -55,10 +58,10 @@ class NPISAsynchHydrationJoltWorkerTest {
 
     @Test
     void testHandle_invalidInput_shouldThrow() {
-        // given invalid input
+        // given
         when(job.getVariablesAsMap()).thenReturn(Map.of("eventNote", 123));
 
-        // then expect exception
+        // then
         assertThrows(IllegalArgumentException.class, () -> worker.handle(jobClient, job));
     }
 }
