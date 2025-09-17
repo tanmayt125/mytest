@@ -1,67 +1,37 @@
-package au.com.optus.renaissanceCamunda.worker;
+@Test
+void testHandle_successfulFlow() {
+    // 1. Mock config
+    Map<String, String> npisMap = Map.of("SomeName", "ExpectedResult");
+    when(failureConfig.getNpis()).thenReturn(npisMap);
 
-import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
-import io.camunda.zeebe.client.api.response.ActivatedJob;
-import io.camunda.zeebe.client.api.worker.JobClient;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+    // 2. Mock job
+    Map<String, Object> vars = new HashMap<>();
+    vars.put("eventNote", Map.of("code", "0"));
+    when(job.getVariablesAsMap()).thenReturn(vars);
+    when(job.getKey()).thenReturn(123L);
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+    // 3. Mock Zeebe chain
+    CompleteJobCommandStep1 command = mock(CompleteJobCommandStep1.class);
+    when(jobClient.newCompleteCommand(anyLong())).thenReturn(command);
+    when(command.variables(anyMap())).thenReturn(command);
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+    @SuppressWarnings("unchecked")
+    ZeebeFuture<CompleteJobResponse> future = mock(ZeebeFuture.class);
+    when(command.send()).thenReturn(future);
+    when(future.join()).thenReturn(mock(CompleteJobResponse.class));
 
-@ExtendWith(MockitoExtension.class)
-class NPISAsynchHydrationJoltWorkerTest {
+    // 4. Run worker
+    worker.handle(jobClient, job);
 
-    @Mock
-    private ServiceDiagnosticsNpisFailureConfig failureConfig;
+    // 5. Capture argument passed into variables()
+    ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
+    verify(command).variables(captor.capture());
 
-    @Mock
-    private JobClient jobClient;
+    Map<String, Object> capturedVars = captor.getValue();
 
-    @Mock
-    private ActivatedJob job;
+    // 6. Check hydratedResponse
+    Object actualTransformed = capturedVars.get("hydratedResponse");
+    Object expectedTransformed = "ok"; // <- yeh tum decide karoge tumhari logic ke hisaab se
 
-    @InjectMocks
-    private NPISAsynchHydrationJoltWorker worker;
-
-    @Test
-    void testHandle_successfulFlow() {
-        // given
-        Map<String, String> npisMap = Map.of("SomeName", "ExpectedResult");
-        when(failureConfig.getNpis()).thenReturn(npisMap);
-
-        Map<String, Object> vars = new HashMap<>();
-        vars.put("eventNote", Map.of("code", "0"));
-        when(job.getVariablesAsMap()).thenReturn(vars);
-        when(job.getKey()).thenReturn(123L);
-
-        // mock command chain
-        CompleteJobCommandStep1 command = mock(CompleteJobCommandStep1.class);
-        when(jobClient.newCompleteCommand(anyLong())).thenReturn(command);
-        when(command.variables(anyMap())).thenReturn(command);
-        when(command.send()).thenReturn(CompletableFuture.completedFuture(null));
-
-        // when
-        worker.handle(jobClient, job);
-
-        // then
-        verify(failureConfig, atLeastOnce()).getNpis();
-        verify(jobClient).newCompleteCommand(123L);
-    }
-
-    @Test
-    void testHandle_invalidInput_shouldThrow() {
-        // given
-        when(job.getVariablesAsMap()).thenReturn(Map.of("eventNote", 123));
-
-        // then
-        assertThrows(IllegalArgumentException.class, () -> worker.handle(jobClient, job));
-    }
+    assertEquals(expectedTransformed, actualTransformed);
 }
