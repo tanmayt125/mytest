@@ -94,6 +94,30 @@
 		</dependency>
 
 
+		<dependencies>
+			<!-- Spring Boot Test starter (includes JUnit 5, AssertJ, Hamcrest, basic Mockito, etc.) -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-test</artifactId>
+				<scope>test</scope>
+				<exclusions>
+					<!-- purana JUnit 4 engine hata dete hain -->
+					<exclusion>
+						<groupId>org.junit.vintage</groupId>
+						<artifactId>junit-vintage-engine</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<!-- Mockito extension for JUnit 5 (@ExtendWith(MockitoExtension.class)) -->
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-junit-jupiter</artifactId>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+
+
 	</dependencies>
 
 	<build>
