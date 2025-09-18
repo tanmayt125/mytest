@@ -1,6 +1,8 @@
 package au.com.optus.renaissanceCamunda.worker;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.zeebe.client.api.ZeebeFuture;
 import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
@@ -49,6 +51,9 @@ class NPISAsynchHydrationJoltWorkerTest {
                 getClass().getResourceAsStream("/npis/jolt-spec-npis.json"),
                 new TypeReference<List<Object>>() {}
         );
+
+        // 2. Convert nested objects into stringified JSON (for worker compatibility)
+        jobVars = JsonStringifyHelper.stringifyNested(jobVars);
 
         // 3. Add joltSpec into jobVars map (since worker reads it from variables.get("joltSpecNpis"))
         jobVars.put("joltSpecNpis", joltSpec);
