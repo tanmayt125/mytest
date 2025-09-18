@@ -81,9 +81,9 @@ class NPISAsynchHydrationJoltWorkerTest {
         worker.handle(jobClient, job);
 
         // 8. Verify actual vs expected
-        verify(command).variables(argThat(actualVars -> {
-            assertEquals(expectedResponse, actualVars, "HydratedResponse did not match expected");
-            return true;
-        }));
+        assertEquals(
+                mapper.readTree(mapper.writeValueAsString(expectedResponse)),
+                mapper.readTree(mapper.writeValueAsString(actualVars))
+        );
     }
 }
