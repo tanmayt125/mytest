@@ -102,5 +102,14 @@ class NPISAsynchHydrationJoltWorkerTest {
 </dependency>
 
 
+                JSONAssert.assertEquals(
+                        expectedJson,
+                        actualJson,
+                        new CustomComparator(
+                                JSONCompareMode.LENIENT,
+                                new Customization("eventTime", (o1, o2) -> true) // ignore eventTime
+                        )
+                );
+
     }
 }
