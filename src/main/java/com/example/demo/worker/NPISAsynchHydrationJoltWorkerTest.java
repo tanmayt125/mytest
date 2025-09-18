@@ -85,5 +85,22 @@ class NPISAsynchHydrationJoltWorkerTest {
                 mapper.readTree(mapper.writeValueAsString(expectedResponse)),
                 mapper.readTree(mapper.writeValueAsString(actualVars))
         );
+
+        import org.skyscreamer.jsonassert.JSONAssert;
+
+        String expectedJson = mapper.writeValueAsString(expectedResponse);
+        String actualJson   = mapper.writeValueAsString(actualVars);
+
+// strict = false → order ignore karega
+        JSONAssert.assertEquals(expectedJson, actualJson, false);
+
+
+        <dependency>
+  <groupId>org.skyscreamer</groupId>
+  <artifactId>jsonassert</artifactId>
+  <scope>test</scope>
+</dependency>
+
+
     }
 }
