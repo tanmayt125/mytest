@@ -113,3 +113,64 @@ class NPISAsynchHydrationJoltWorkerTest {
 
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@ParameterizedTest
+@MethodSource("jsonTestCases")
+void testHandle_withMultipleJsons(String requestFile, String expectedFile) throws Exception {
+    ObjectMapper mapper = new ObjectMapper();
+
+    // 1. Load request
+    Map<String, Object> jobVars = mapper.readValue(
+            getClass().getResourceAsStream("/ipne/" + requestFile),
+            new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {}
+    );
+
+    // 2. Load JOLT spec
+    List<Object> joltSpec = mapper.readValue(
+            getClass().getResourceAsStream("/jolt-spec-npis.json"),
+            new com.fasterxml.jackson.core.type.TypeReference<List<Object>>() {}
+    );
+    jobVars.put("joltSpecNpis", joltSpec);
+
+    // 3. Load expected
+    Map<String, Object> expectedResponse = mapper.readValue(
+            getClass().getResourceAsStream("/ipne/" + expectedFile),
+            new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {}
+    );
+
+    when(job.getVariablesAsMap()).thenReturn(jobVars);
+    when(job.getKey()).thenReturn(123L);
+
+    worker.handle(jobClient, job);
+
+    ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
+    verify(command).variables(captor.capture());
+
+    String expectedJson = mapper.writeValueAsString(expectedResponse);
+    String actualJson   = mapper.writeValueAsString(captor.getValue());
+
+    JSONAssert.assertEquals(expectedJson, actualJson, false);
+}
+
+static Stream<Arguments> jsonTestCases() {
+    return Stream.of(
+            Arguments.of("ipne_case1_request.json", "ipne_case1_expected.json"),
+            Arguments.of("ipne_case2_request.json", "ipne_case2_expected.json"),
+            Arguments.of("ipne_case3_request.json", "ipne_case3_expected.json")
+    );
+}
