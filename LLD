@@ -1,43 +1,23 @@
 @startuml
+title Kafka Test - Microservice as Consumer
 
-actor PortalServiceNow
-participant DML
-participant Camunda
-database PostgresDB
-participant Kafka
-queue TopicKafka
+actor Developer
+participant "GitLab CI Template" as CI
+participant "Cucumber Runner" as C
+participant "Kafka Stub POD" as K
+participant "Microservice" as MS
+participant "Downstream Stub (WireMock)" as WM
 
-PortalServiceNow -> DML : Initiate Hardware Shipment Request
-DML -> Camunda : Trigger Camunda API with TenantId & ProcessId
+Developer -> CI: Trigger pipeline with RUN_TESTS
+CI -> K: Create Kafka stub pod (from blank file)
+CI -> MS: Deploy service with config (bootstrap.servers -> K)
 
-Camunda -> Camunda : Validate Request
-Camunda -> PostgresDB : Store Request Data
-PostgresDB --> Camunda : Acknowledgment
-Camunda -> Camunda : Check Installation Method
+C -> K: Seed dummy message in input topic
+K -> MS: Deliver message (MS listener consumes)
+MS -> WM: HTTP PATCH to downstream stub (e.g. UCRM)
+WM --> MS: Return mock 200 OK
+MS --> C: Final status = Success
+C -> C: Validate outcome (HTTP response, or log of processing)
 
-alt Professional Install
-    Camunda -> Camunda : Continue with fetching details
-else Self-Install
-    Camunda -> Kafka : Send Message to Kafka (Original Request)
-end
-
-alt Fetching Required Details
-    Camunda -> PostgresDB : Fetch Shipping Address
-    PostgresDB --> Camunda : Shipping Address Data
-
-    Camunda -> PostgresDB : Fetch WBS Code
-    PostgresDB --> Camunda : WBS Code Data
-
-    Camunda -> PostgresDB : Fetch Hardware To Be Shipped
-    PostgresDB --> Camunda : Hardware Details
-end
-
-Camunda -> DML : Append Final Response
-DML -> Camunda : REST Call for fetching Kafka Details
-
-Camunda -> Kafka : Send Hydrated Response to Kafka
-Kafka -> TopicKafka : (Forwarded internally)
-
-DML -> PortalServiceNow : Listen (hydrated response)
-
+CI -> K: Scale down Kafka stub pod
 @enduml
