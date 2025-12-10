@@ -3,6 +3,12 @@
     <artifactId>spring-kafka</artifactId>
 </dependency>
 
+<dependency>
+    <groupId>org.apache.kafka</groupId>
+    <artifactId>kafka-clients</artifactId>
+    <version>3.6.1</version> <!-- or any stable version -->
+</dependency>
+
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
