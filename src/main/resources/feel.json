@@ -1,0 +1,6 @@
+# 632
+{
+  fullName: individuals[1].fullName,
+  emailAddress: individuals[1].contactMedium[mediumType = "email"][1].characteristic.emailAddress,
+  phoneNumber: individuals[1].contactMedium[ mediumType = "telephone" ][1].characteristic.phoneNumber
+}
