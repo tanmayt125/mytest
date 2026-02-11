@@ -4,3 +4,8 @@
   emailAddress: individuals[1].contactMedium[mediumType = "email"][1].characteristic.emailAddress,
   phoneNumber: individuals[1].contactMedium[ mediumType = "telephone" ][1].characteristic.phoneNumber
 }
+
+# from request
+productOrder.id
+shippingOrderItem[1].quantity
+shippingOrderItem[1].shipment.shipmentItem[1].product.productCharacteristic[name=" technologyType"][1].value
