@@ -9,3 +9,21 @@
 productOrder.id
 shippingOrderItem[1].quantity
 shippingOrderItem[1].shipment.shipmentItem[1].product.productCharacteristic[name=" technologyType"][1].value
+
+# from 674 response
+{
+locality:
+place[
+geographicAddress.geographicAddressType = "Installation Address"
+].geographicAddress.locality[1],
+
+state:
+place[
+geographicAddress.geographicAddressType = "Installation Address"
+].geographicAddress.stateOrProvince[1],
+
+postcode:
+place[
+geographicAddress.geographicAddressType = "Installation Address"
+].geographicAddress.postcode[1]
+}
