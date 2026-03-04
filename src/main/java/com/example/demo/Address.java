@@ -10,4 +10,21 @@ public class Address {
 //            formattedAddress: place[1].geographicAddress.formattedAddress
 //    }
 
+    // shippingOrderCharacteristic[name="CorrelationId"][1].value
+    // shippingOrderItem[1].productOrderItem.productOrderId
+
 }
+
+//{
+//        "pk": "RequestShipping_71caaec739ffe31922c5bb17a22340bf",
+//        "NTU_MODEL": "ONE621-2Gb6TWac-a",
+//        "ttl": 1710003600
+//        }
+
+//or
+
+//{
+//    "pk": "RequestShipping_71caaec739ffe31922c5bb17a22340bf",
+//        "RequestShipping_71caaec739ffe31922c5bb17a22340bf": "ONE621-2Gb6TWac-a",
+//        "ttl": 1710003600
+//}
