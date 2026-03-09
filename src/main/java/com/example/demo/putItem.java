@@ -57,3 +57,7 @@ public PutItemResponse putDynamoDBItem(String ttl, String key, String value) {
         throw new RuntimeException(e.getMessage());
     }
 }
+
+long ttl = Instant.now()
+        .plus(30, ChronoUnit.DAYS)
+        .getEpochSecond();
