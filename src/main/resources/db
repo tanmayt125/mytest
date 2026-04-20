@@ -1,0 +1,57 @@
+<dependency>
+    <groupId>software.amazon.awssdk</groupId>
+    <artifactId>dynamodb</artifactId>
+</dependency>
+
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
+
+
+public PutItemResponse putItemWithTTL(String tableName, String key, String value, String ttl) {
+
+    long createDate = System.currentTimeMillis() / 1000; // TTL expects epoch seconds
+    long expireDate;
+
+    // Calculate TTL
+    if (ttl == null || ttl.isEmpty()) {
+        log.info("Using default TTL");
+        expireDate = createDate + Long.parseLong(
+                dynamoDetails.get(DynamoDBConstants.DEFAULT_TTL)
+        );
+    } else {
+        expireDate = createDate + Long.parseLong(ttl);
+    }
+
+    log.info("Expiry Date: {}", expireDate);
+
+    // Prepare item
+    Map<String, AttributeValue> item = new HashMap<>();
+
+    item.put(DynamoDBConstants.PRIMARY_KEY,
+            AttributeValue.builder().s(key).build());
+
+    item.put("value",
+            AttributeValue.builder().s(value).build());
+
+    item.put(DynamoDBConstants.TIME_TO_LIVE,
+            AttributeValue.builder().n(String.valueOf(expireDate)).build());
+
+    try {
+        PutItemRequest request = PutItemRequest.builder()
+                .tableName(tableName)
+                .item(item)
+                .build();
+
+        log.info("Putting item into table: {}", tableName);
+
+        PutItemResponse response = dynamoDbClient.putItem(request);
+
+        log.info("PutItem successful. RequestId: {}",
+                response.responseMetadata().requestId());
+
+        return response;
+
+    } catch (DynamoDbException e) {
+        log.error("Error while putting item into DynamoDB: {}", e.getMessage(), e);
+        throw new RuntimeException("Failed to put item in DynamoDB", e);
+    }
+}
