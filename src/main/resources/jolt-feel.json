@@ -1,0 +1,154 @@
+= event.id
+= event.serviceTest.serviceTestResults[1].type
+
+[
+  {
+    "operation": "default",
+    "spec": {
+      "event": {
+        "downstream_test_execution_ref_id": "=identity"
+      }
+    }
+  },
+
+  {
+    "operation": "shift",
+    "spec": {
+      "eventId": "eventId",
+      "eventType": "eventType",
+      "eventTime": "eventTime",
+      "description": "notificationType",
+      "eventNote": "eventNote",
+      "event": {
+        "notificationType": "description",
+        "id": [
+          "event.id",
+          "event.characteristic[2].value"
+        ],
+        "downstream_test_execution_ref_id": {
+          "#downstream_test_execution_ref_id": "event.characteristic[2].name",
+          "#string": "event.characteristic[2].valueType"
+        },
+        "status": "event.state",
+        "serviceTest": {
+          "serviceTestResults": {
+            "*": {
+              "result": {
+                "@": "event.characteristic[1].value",
+                "#test_result": "event.characteristic[1].name",
+                "#string": "event.characteristic[1].valueType"
+              },
+              "type": "event.name",
+              "testMeasure": {
+                "*": {
+                  "type": "tmp.testMeasure[&1].metricName",
+                  "*": {
+                    "$": "tmp.testMeasure[&2].valueMap.&(0).name",
+                    "@": "tmp.testMeasure[&2].valueMap.&(0).value"
+                  }
+                }
+              },
+              "errors": {
+                "*": {
+                  "code": {
+                    "#string": "event.characteristic[3].valueType",
+                    "#error_code": "event.characteristic[3].name",
+                    "@": "event.characteristic[3].value"
+                  },
+                  "reason": {
+                    "#string": "event.characteristic[4].valueType",
+                    "#error_reason": "event.characteristic[4].name",
+                    "@": "event.characteristic[4].value"
+                  }
+                }
+              }
+            }
+          },
+          "serviceRef": {
+            "id": "event.relatedService.id",
+            "type": "event.relatedService.\\@type"
+          },
+          "executionDate": {
+            "startDateTime": "event.startDateTime",
+            "endDateTime": "event.endDateTime"
+          }
+        },
+        "externalId": {
+          "#externalId": "event.characteristic[0].name",
+          "@(1,externalId)": "event.characteristic[0].value",
+          "#string": "event.characteristic[0].valueType"
+        }
+      }
+    }
+  },
+
+  {
+    "operation": "shift",
+    "spec": {
+      "eventId": "eventId",
+      "eventType": "eventType",
+      "eventTime": "eventTime",
+      "eventNote": "eventNote",
+      "description": "description",
+      "event": {
+        "*": "event.&"
+      },
+      "tmp": {
+        "testMeasure": {
+          "*": {
+            "metricName": "event.testMeasure[&1].metricName",
+            "valueMap": {
+              "*": {
+                "@": "event.testMeasure[&3].value[]"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  {
+    "operation": "modify-overwrite-beta",
+    "spec": {
+      "event": {
+        "testMeasure": {
+          "*": {
+            "value": {
+              "*": {
+                "valueType": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  {
+    "operation": "remove",
+    "spec": {
+      "event": {
+        "testMeasure": {
+          "*": {
+            "value": {
+              "*": {
+                "name": {
+                  "type": ""
+                }
+              }
+            }
+          }
+        }
+      },
+      "tmp": ""
+    }
+  },
+
+  {
+    "operation": "modify-overwrite-beta",
+    "spec": {
+      "*": "=recursivelySquashNulls"
+    }
+  }
+]
